@@ -1,0 +1,20 @@
+PT1(Periodo Massa)
+Period_w: 1.7971+/-0.0009
+Chi2_w: 2.4006595931257575 su v=3
+Linear regression: T =  1.7952+/-0.0030 + 0.003+/-0.005 * M
+Chi2_ls: 1.9789198140198674 su v=2
+
+
+PT2(Periodo Lunghezza)
+
+Linear regression: T = 0.6409+/-0.0010 + 1.4175+/-0.0015 * l
+Chi2_w: 17659.258278636746
+Non e' lineare!
+Linear regression_log: Y = 0.30232+/-0.00018 + 0.4993+/-0.0008 * X
+Representing: T = 2.0060+/-0.0008 * ( l ^ 0.4993+/-0.0008 )
+Chi2_log: 18.07043262561879 su v=8
+#Chi2_delog: 26.58192968635316 su v=8
+g_w: 9.809+/-0.007
+g_m: 9.78+/-0.08
+g_a: 9.811+/-0.008
+g_tab: 9.806

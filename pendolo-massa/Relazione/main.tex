@@ -1,0 +1,92 @@
+\documentclass[10pt]{article}
+\usepackage[export]{adjustbox}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{titlepic}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\setlist[itemize]{label=\textbullet}
+%finale
+\linespread{1.3}
+
+\title{Terza esperienza di laboratorio - Relazione}
+
+\author{\\
+		\textbf{Gruppo L12}
+		\\  
+        \\Dal Farra Filippo, Garbi Luca, Libardi Gabriele\\
+        \\   
+}
+\date{{\LARGE 1 Maggio 2018}}
+
+\begin{document}
+
+\maketitle 
+\begin{large}
+
+\thispagestyle{empty} %rimuove numero pg
+\newpage 
+\tableofcontents
+\newpage
+
+\section{Abstract}
+In questa esperienza di laboratorio si verificherà quantitativamente la dipendenza del periodo T di un pendolo dalla lunghezza l del filo e la massa m del peso applicato. In particolare si cercherà di esprimere queste relazioni mediante un limite superiore per la dipendenza dalla massa e una relazione linearizzata per la dipendenza dalla lunghezza. Nello sviluppo dell'esperienza verranno costruiti grafici logaritmi, verranno fatte applicazioni della regressione lineare, del test del chi quadrato, del calcolo dimensionale e in generale della propagazione dell'incertezza. Al termine verrà calcolato il valore dell'accelerazione di gravità a partire dai dati sperimentali delle misure di lunghezza e periodo del pendolo in diverse modalità ed infine confrontati con il valore misurato con i valori tabulati (a Povo $g=9.806\ m/s^2$).
+
+\newpage
+
+\section{Materiali:}
+
+  \begin{itemize}
+  	\item Filo da lenza;
+    \item Cilindri di diverse masse;
+    \item Flessometro (risoluzione di lettura $1\ mm$);
+    \item Supporto verticale;
+    \item Calibro ventesimale (risoluzione di lettura $0.05\ mm$);
+    \item Bilancia elettronica (risoluzione di lettura $0.1\ g$);
+    \item Cronometro digitale (risoluzione di lettura $0.01\ s$);
+    \item Arduino$^{\scriptsize ®}$ Uno Rev3;
+    \item Led e fototransistor infrarosso, jumper e altri componenti elettroniche.
+  \end{itemize}
+
+
+
+\section{Procedure di misura}
+L'intera esperienza è stata svolta nell'arco di una sessione di laboratorio. Come prima cosa è stata presa la misura del periodo di un pendolo con 4 masse differenti, ma mantenendo invariata la lunghezza. La seconda parte dell'esperienza invece constava nel misurare il periodo del pendolo, tenendo la stessa massa, ma usando valori diversi di lunghezza del pendolo.
+\\ Il pendolo è composto da un filo da lenza appeso ad un supporto scorrevole verticale di altezza variabile, all'altra estremità del filo è appeso un cilindro che per i nostri fini può essere considerato di materiale omogeneo. Cilindro e filo sono collegati da un dado a cupola forato che si attacca attraverso una vite filettata presente ad un'estremità del cilindro. Nella fase di pesatura delle masse con la bilancia elettronica abbiamo messo sul piatto sia cilindri che dado. La misura delle lunghezze del pendolo invece è stata effettuata con il flessometro a partire dall'attacco del filo al supporto fino al baricentro dei cilindri che talvolta avevano volumi differenti. Per la misurazione del periodo invece è stato allestito in piccolo circuito elettronico che sfrutta gli infrarossi. Infatti su due breadboard ad una distanza di circa 15mm sono stati montati un led IR e un fototransistor IR, collegati entrambi alla scheda elettronica Arduino$^{\scriptsize ®}$ Uno Rev3 dotata di microcontrollore. Le misurazioni sono avvenute in questo modo: il sistema di misura delle due breadboard veniva posizionato ad un'altezza tale che il filo del pendolo appena sopra il cilindro passasse tra led e fototransistor una volta che al pendolo veniva data un'ampiezza di oscillazione di circa 7 gradi. Successivamente la massa veniva lasciata libera di oscillare, le prime oscillazioni del pendolo sono state trascurate in tutte le misure poiché il cilindro non era stabile in quanto presentava anche sue oscillazioni locali. Una volta stabilizzate queste ultime, nel momento in cui il filo interrompeva 
+
+\section{Analisi dei dati}
+%da analisi dimensionali...
+Nella successiva analisi verranno analizzati separatamente i dati acquisiti per verificare la relazione tra periodo e massa e tra periodo e lunghezza del pendolo.
+
+
+\subsection{Dipendenza del periodo del pendolo dalla massa}
+
+\begin{equation}
+	\label{test_chi2}
+    \chi^2 = \sum_{i=1}^N \frac{(y_i - A -Bx_i)^2}{(\sigma y_i)^2}
+\end{equation}
+\subsection{Dipendenza del periodo del pendolo dalla lunghezza}
+\section{Conclusioni}
+\end{large}
+\bibliographystyle{abbrv}
+\bibliography{main}
+
+\end{document}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

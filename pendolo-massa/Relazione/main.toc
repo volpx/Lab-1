@@ -1,0 +1,7 @@
+\contentsline {section}{\numberline {1}Abstract}{3}
+\contentsline {section}{\numberline {2}Materiali:}{4}
+\contentsline {section}{\numberline {3}Procedure di misura}{4}
+\contentsline {section}{\numberline {4}Analisi dei dati}{5}
+\contentsline {subsection}{\numberline {4.1}Dipendenza del periodo del pendolo dalla massa}{5}
+\contentsline {subsection}{\numberline {4.2}Dipendenza del periodo del pendolo dalla lunghezza}{6}
+\contentsline {section}{\numberline {5}Conclusioni}{6}
