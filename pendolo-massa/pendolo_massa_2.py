@@ -75,7 +75,7 @@ def parte_2():
 
 
     ## Plot_1
-    fig1=plt.figure()
+    fig1=plt.figure(figsize=(10,5))
     fig1.suptitle('T=T(M)')
     ax1=fig1.add_subplot(111)
     ax1.errorbar(x,y,xerr=dm,yerr=dt,fmt='b.',label='Osservazioni')
@@ -89,4 +89,5 @@ def parte_2():
     legend1 = ax1.legend(loc='upper right', shadow=True)
     legend1.get_frame().set_facecolor('#00FF69')
     #show
-    plt.show()
+    #plt.show()
+    fig1.savefig('Relazione/fig11.png', transparent=False, dpi=160, )

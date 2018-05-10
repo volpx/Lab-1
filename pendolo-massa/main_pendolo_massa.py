@@ -7,7 +7,7 @@ from pendolo_massa_2 import parte_2
 from pendolo_massa_3 import parte_3
 
 def main():
-    # parte_2()
+    parte_2()
     parte_3()
 
 if __name__ == '__main__':

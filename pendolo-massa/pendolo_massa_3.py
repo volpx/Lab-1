@@ -7,6 +7,8 @@ from functions import *
 
 N_DATA=50
 CON_DATA=5
+MONO_FIGSIZE=(6,5)
+DOUBLE_FIGSIZE=(10,5)
 
 def parte_3():
     def import_data(file):
@@ -108,7 +110,7 @@ def parte_3():
     #            PLOTS
     ############################################################################
     ##PLOT_1
-    fig1=plt.figure()
+    fig1=plt.figure(figsize=DOUBLE_FIGSIZE)
     #sp1
     ax11=fig1.add_subplot(1,2,1)
     ax11.errorbar(x,y,xerr=dx,yerr=dt,fmt='b.')
@@ -127,7 +129,7 @@ def parte_3():
     fig1.suptitle('T=T(M)',fontsize=16)
 
     ##PLOT_2
-    fig2=plt.figure()
+    fig2=plt.figure(figsize=(8,4))
     #sp1
     ax21=fig2.add_subplot(1,2,1)
     ax21.errorbar(x,y,xerr=dx,yerr=dt,fmt='b.')
@@ -147,7 +149,7 @@ def parte_3():
 
 
     ##PLOT 3
-    fig3=plt.figure()
+    fig3=plt.figure(figsize=DOUBLE_FIGSIZE)
     #sp1
     ax31=fig3.add_subplot(1,2,1)
     ax31.errorbar(X,Y,xerr=dX,yerr=dY,fmt='b.')
@@ -166,7 +168,7 @@ def parte_3():
     fig3.suptitle('Proporzione lineare sui grafici loglog Y=A_log+B_log*X',fontsize=16)
 
     ##PLOT 4
-    fig4=plt.figure()
+    fig4=plt.figure(figsize=MONO_FIGSIZE)
     #sp1
     ax41=fig4.add_subplot(1,1,1)
     for i in [[dg,'#e41a1c','dg'],[dg_l,'#377eb8','dg_l'],[dg_t,'#4daf4a','dg_t']]:
@@ -179,7 +181,7 @@ def parte_3():
     fig4.suptitle('Confronto contributo incertezze per g',fontsize=16)
 
     ##PLOT 5
-    fig5=plt.figure()
+    fig5=plt.figure(figsize=DOUBLE_FIGSIZE)
     #sp1
     ax51=fig5.add_subplot(1,2,1)
     ax51.errorbar(x,g,xerr=dx,yerr=dg,fmt='b.')
@@ -207,4 +209,9 @@ def parte_3():
     #finishing
     fig5.suptitle('Dipendenza di g da l',fontsize=16)
 
-    plt.show()
+    #plt.show()
+    fig1.savefig('Relazione/fig1.png', transparent=False, dpi=160, )
+    fig2.savefig('Relazione/fig2.png', transparent=False, dpi=160, )
+    fig3.savefig('Relazione/fig3.png', transparent=False, dpi=160, )
+    fig4.savefig('Relazione/fig4.png', transparent=False, dpi=160, )
+    fig5.savefig('Relazione/fig5.png', transparent=False, dpi=160, )
