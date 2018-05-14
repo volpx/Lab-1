@@ -90,4 +90,4 @@ def parte_2():
     legend1.get_frame().set_facecolor('#00FF69')
     #show
     #plt.show()
-    fig1.savefig('Relazione/fig11.png', transparent=False, dpi=160, )
+    fig1.savefig('Relazione/fig 2/fig11.png', transparent=False, dpi=160, )

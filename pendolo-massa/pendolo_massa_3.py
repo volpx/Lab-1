@@ -2,6 +2,8 @@ import numpy as np
 from uncertainties import ufloat
 import csv
 import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes
+from mpl_toolkits.axes_grid1.inset_locator import mark_inset
 
 from functions import *
 
@@ -47,13 +49,15 @@ def parte_3():
     dx=2e-3/np.sqrt(12)
     delta_t=1e-5/np.sqrt(12)
     dt=np.sqrt((delta_t)**2 + \
-                np.std(tempi,axis=1)**2)
-
+                np.std(tempi,axis=1)**2)[0:]
+    dm=1e-4/np.sqrt(12)
+    dd=5*np.pi/180
 
     #data
-    x=final_lengths=lunghezze
-    y=final_time=np.array([np.mean(t) for t in tempi])
+    x=final_lengths=lunghezze[0:]
+    y=final_time=np.array([np.mean(t) for t in tempi])[0:]
     time_weigths=1/(dt**2)
+    m=201.9*1e-3
     print('Lengths:',x)
     print('Dx:',dx)
     print('Periods:',y)
@@ -79,7 +83,7 @@ def parte_3():
     dY=np.sqrt((np.log10(np.e)/final_time*dt)**2+(B_tmp*dX)**2)
     Y_weigths=1/(dY**2)
     A_log,B_log,dA_log,dB_log=linear_regression_AB(X,Y,Y_weigths)
-    A_log=0.302323 #imbroglio
+    #A_log=0.302323 #imbroglio
     a=10**A_log
     da=(10**A_log)*np.log(10)*dA_log
     print('Linear regression_log: Y =',ufloat(A_log,dA_log),'+',ufloat(B_log,dB_log),'* X')
@@ -103,8 +107,35 @@ def parte_3():
     print('g_w:',ufloat(g0_w,dg0_w))
     print('g_m:',ufloat(g0_m,dg0_m))
     print('g_a:',ufloat(g0_a,dg0_a))
-    #TODO:graph above
-
+    chi2_g_w=chi2(g,dg,g0_w)
+    chi2_g_a=chi2(g,dg,g0_a)
+    print('Chi2_g_w:',chi2_g_w)
+    print('Chi2_g_a:',chi2_g_a)
+    #proviamo a fare andare le cose
+    R=.02
+    h=.019
+    deg=5*np.pi/180
+    I,dI=m*final_lengths**2+.25*m*R**2+(1/12)*m*h**2,np.sqrt(((2*m*final_lengths)*dx)**2+\
+                                                                ((.5*m*R)*dx)**2+\
+                                                                (((1/6)*m*h)*dx)**2)
+    # print('I:',I)
+    g_1=(2*np.pi/final_time*np.sqrt(I/m/final_lengths)*(1+.25*np.sin(deg/2)**2))**2
+    print('g_1:',g_1)
+    dsqrtg=np.sqrt( \
+                    ((2*np.pi*np.sqrt((final_lengths**2+.25*R**2+(1/12)*h**2)/final_lengths)*(1+.25*np.sin(deg/2)**2)*1/final_time**2)*dt)**2 + \
+                    ((2*np.pi/final_time*(1+.25*np.sin(deg/2)**2)*.5*np.sqrt(final_lengths/(final_lengths**2+.25*R**2+(1/12)*h**2))*(2*final_lengths**2-(final_lengths**2+.25*R**2+(1/12)*h**2))/(final_lengths**2)*dx)**2) + \
+                    (((.25*np.pi*np.sin(deg)/final_time*np.sqrt((final_lengths**2+.25*R**2+(1/12)*h**2)/(final_lengths)))*dd)**2) + \
+                    (((1+.25*np.sin(deg/2)**2)*np.pi/final_time/np.sqrt(final_lengths)*(1/6)*h/(np.sqrt(final_lengths**2+.25*R**2+(1/12)*h**2)))*dx)**2 + \
+                    (((1+.25*np.sin(deg/2)**2)*np.pi/final_time/np.sqrt(final_lengths)*.5*R/(np.sqrt(final_lengths**2+.25*R**2+(1/12)*h**2)))*dx)**2 )
+    dg_1=2*dsqrtg*np.sqrt(g_1)
+    g0_1w,dg0_1w=w_mean(g_1,1/dg_1**2)
+    print('g0_1w:',ufloat(g0_1w,dg0_1w))
+    chi2_1w=chi2(g_1,dg_1,g0_1w)
+    print('chi2_1w:',chi2_1w)
+    #TODO:smth wont work
+    g_a_1,dg_a_1=(2*np.pi/a)**2*I/m,np.sqrt(((( (2*np.pi/a)**2/m )*dI)**2)+((( (2*np.pi)**2*I/m*2/(a**3) )*da)**2)+((( (2*np.pi/a)**2*I )*dm)**2))
+    g0_a_1,dg0_a_1=w_mean(g_a_1,1/(dg_a_1**2))
+    print('g0_a_1:',g_a_1)
 
     ############################################################################
     #            PLOTS
@@ -125,6 +156,16 @@ def parte_3():
     ax12.set_title('Logarithmic axes')
     ax12.set_ylabel('T ['+t_units+']')
     ax12.set_xlabel('L ['+l_units+']')
+    #zoom
+    ax11_zoom = fig1.add_axes((.3,.2,.15,.2))
+    ax11_zoom.errorbar(final_lengths[3],final_time[3],xerr=dx,yerr=dt[3],fmt='b.')
+    ax11_zoom.set_xlim(final_lengths[3]-dx*1.1,final_lengths[3]+dx*1.1)
+    ax11_zoom.set_ylim(final_time[3]-dt[3]*1.1,final_time[3]+dt[3]*1.1)
+    #ax11_zoom.set_yticks([final_time[3]-dt[3],final_time[3],final_time[3]+dt[3]])
+    ax11_zoom.set_yticks([1.2727,1.2714,1.27])
+    ax11_zoom.set_ylabel('T ['+t_units+']')
+    ax11_zoom.set_xlabel('L ['+l_units+']')
+    mark_inset(ax11, ax11_zoom, loc1=1, loc2=3, fc="none", ec="0.5")
     #finishing
     fig1.suptitle('T=T(M)',fontsize=16)
 
@@ -181,37 +222,44 @@ def parte_3():
     fig4.suptitle('Confronto contributo incertezze per g',fontsize=16)
 
     ##PLOT 5
-    fig5=plt.figure(figsize=DOUBLE_FIGSIZE)
+    fig5=plt.figure(figsize=MONO_FIGSIZE)
     #sp1
-    ax51=fig5.add_subplot(1,2,1)
+    ax51=fig5.add_subplot(1,1,1)
     ax51.errorbar(x,g,xerr=dx,yerr=dg,fmt='b.')
+    ax51.errorbar(x,g_1,xerr=dx,yerr=dg_1,fmt='r.')
     ax51.axhline(y=9.806,color='#000000',label='Tabulato')
     ax51.axhline(y=g0_w,color='#e41a1c',label='Media pesata')
     ax51.axhspan(ymin=g0_w-dg0_w,ymax=g0_w+dg0_w,color='#e41a1c',alpha=.5)
     ax51.axhline(y=g0_m,color='#377eb8',label='Media aritmetica')
     ax51.axhspan(ymin=g0_m-dg0_m,ymax=g0_m+dg0_m,color='#377eb8',alpha=.5)
-    # #imporglio in modo da fare il grafico
-    # g0_a-=0.02
-    ax51.axhline(y=g0_a,color='#4daf4a',label='Da a')
-    ax51.axhspan(ymin=g0_a-dg0_a,ymax=g0_a+dg0_a,color='#4daf4a',alpha=.5)
     ax51.set_title('g=g(l)')
     ax51.set_ylabel('g ['+l_units+'*'+t_units+'^-2]')
     ax51.set_xlabel('L ['+l_units+']')
     legend51 = ax51.legend(loc='lower right', shadow=True)
     legend51.get_frame().set_facecolor('#00FF69')
-    #sp2
-    ax52=fig5.add_subplot(1,2,2)
-    ax52.errorbar(x,g-9.806,xerr=dx,yerr=dg,fmt='b.')
-    ax52.axhline(y=0,color='#e41a1c')
-    ax52.set_title('Rg=Rg(l)')
-    ax52.set_ylabel('R ['+l_units+'*'+t_units+'^-2]')
-    ax52.set_xlabel('L ['+l_units+']')
     #finishing
     fig5.suptitle('Dipendenza di g da l',fontsize=16)
 
+    ##PLOT 6
+    fig6=plt.figure(figsize=MONO_FIGSIZE)
+    #sp1
+    ax61=fig6.add_subplot(1,1,1)
+    ax61.errorbar(x,g,xerr=dx,yerr=dg,fmt='b.')
+    ax61.axhline(y=9.806,color='#000000',label='Tabulato')
+    ax61.axhline(y=g0_a,color='#4daf4a',label='Da a')
+    ax61.axhspan(ymin=g0_a-dg0_a,ymax=g0_a+dg0_a,color='#4daf4a',alpha=.5)
+    ax61.set_title('g=g(l)')
+    ax61.set_ylabel('g ['+l_units+'*'+t_units+'^-2]')
+    ax61.set_xlabel('L ['+l_units+']')
+    legend61 = ax61.legend(loc='lower right', shadow=True)
+    legend61.get_frame().set_facecolor('#00FF69')
+    #finishing
+    fig6.suptitle('Dipendenza di g da l (considerando a)',fontsize=16)
+
     #plt.show()
-    fig1.savefig('Relazione/fig1.png', transparent=False, dpi=160, )
-    fig2.savefig('Relazione/fig2.png', transparent=False, dpi=160, )
-    fig3.savefig('Relazione/fig3.png', transparent=False, dpi=160, )
-    fig4.savefig('Relazione/fig4.png', transparent=False, dpi=160, )
-    fig5.savefig('Relazione/fig5.png', transparent=False, dpi=160, )
+    fig1.savefig('Relazione/fig 3/fig1.png', transparent=False, dpi=160, )
+    fig2.savefig('Relazione/fig 3/fig2.png', transparent=False, dpi=160, )
+    fig3.savefig('Relazione/fig 3/fig3.png', transparent=False, dpi=160, )
+    fig4.savefig('Relazione/fig 3/fig4.png', transparent=False, dpi=160, )
+    fig5.savefig('Relazione/fig 3/fig5.png', transparent=False, dpi=160, )
+    fig6.savefig('Relazione/fig 3/fig6.png', transparent=False, dpi=160, )
