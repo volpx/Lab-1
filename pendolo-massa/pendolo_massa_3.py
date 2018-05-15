@@ -133,10 +133,6 @@ def parte_3():
     chi2_1w=chi2(g_1,dg_1,g0_1w)
     print('chi2_1w:',chi2_1w)
     #TODO:smth wont work
-    g_a_1=(2*np.pi/a)**2*I/m
-    dg_a_l=np.sqrt(((( (2*np.pi/a)**2/m )*dI)**2)+((( (2*np.pi)**2*I/m*2/(a**3) )*da)**2)+((( (2*np.pi/a)**2*I )*dm)**2))
-    g0_a_1,dg0_a_1=w_mean(g_a_1,1/(dg_a_1**2))
-    print('g0_a_1:',g_a_1)
 
     ############################################################################
     #            PLOTS
