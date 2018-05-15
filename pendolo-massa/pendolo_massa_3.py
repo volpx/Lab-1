@@ -58,6 +58,9 @@ def parte_3():
     y=final_time=np.array([np.mean(t) for t in tempi])[0:]
     time_weigths=1/(dt**2)
     m=201.9*1e-3
+    R=.02
+    h=.019
+    deg=5*np.pi/180
     print('Lengths:',x)
     print('Dx:',dx)
     print('Periods:',y)
@@ -112,13 +115,10 @@ def parte_3():
     print('Chi2_g_w:',chi2_g_w)
     print('Chi2_g_a:',chi2_g_a)
     #proviamo a fare andare le cose
-    R=.02
-    h=.019
-    deg=5*np.pi/180
     I,dI=m*final_lengths**2+.25*m*R**2+(1/12)*m*h**2,np.sqrt(((2*m*final_lengths)*dx)**2+\
                                                                 ((.5*m*R)*dx)**2+\
                                                                 (((1/6)*m*h)*dx)**2)
-    # print('I:',I)
+    print('I:',I)
     g_1=(2*np.pi/final_time*np.sqrt(I/m/final_lengths)*(1+.25*np.sin(deg/2)**2))**2
     print('g_1:',g_1)
     dsqrtg=np.sqrt( \
@@ -133,7 +133,8 @@ def parte_3():
     chi2_1w=chi2(g_1,dg_1,g0_1w)
     print('chi2_1w:',chi2_1w)
     #TODO:smth wont work
-    g_a_1,dg_a_1=(2*np.pi/a)**2*I/m,np.sqrt(((( (2*np.pi/a)**2/m )*dI)**2)+((( (2*np.pi)**2*I/m*2/(a**3) )*da)**2)+((( (2*np.pi/a)**2*I )*dm)**2))
+    g_a_1=(2*np.pi/a)**2*I/m
+    dg_a_l=np.sqrt(((( (2*np.pi/a)**2/m )*dI)**2)+((( (2*np.pi)**2*I/m*2/(a**3) )*da)**2)+((( (2*np.pi/a)**2*I )*dm)**2))
     g0_a_1,dg0_a_1=w_mean(g_a_1,1/(dg_a_1**2))
     print('g0_a_1:',g_a_1)
 
