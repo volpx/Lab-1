@@ -223,7 +223,7 @@ def parte_3():
     #sp1
     ax51=fig5.add_subplot(1,1,1)
     ax51.errorbar(x,g,xerr=dx,yerr=dg,fmt='b.')
-    ax51.errorbar(x,g_1,xerr=dx,yerr=dg_1,fmt='r.')
+    # ax51.errorbar(x,g_1,xerr=dx,yerr=dg_1,fmt='r.')
     ax51.axhline(y=9.806,color='#000000',label='Tabulato')
     ax51.axhline(y=g0_w,color='#e41a1c',label='Media pesata')
     ax51.axhspan(ymin=g0_w-dg0_w,ymax=g0_w+dg0_w,color='#e41a1c',alpha=.5)
@@ -253,6 +253,25 @@ def parte_3():
     #finishing
     fig6.suptitle('Dipendenza di g da l (considerando a)',fontsize=16)
 
+    ##PLOT 7
+    fig7=plt.figure(figsize=MONO_FIGSIZE)
+    #sp1
+    ax71=fig7.add_subplot(1,1,1)
+    ax71.errorbar(x,g,xerr=dx,yerr=dg,fmt='b.',label='Pendolo semplice')
+    ax71.errorbar(x,g_1,xerr=dx,yerr=dg_1,fmt='r.',label='Pendolo fisico')
+    ax71.axhline(y=g0_w,color='b',label='Media pesata pendolo semplice')
+    ax71.axhline(y=g0_1w,color='r',label='Media pesata pendolo fisico')
+    ax71.axhline(y=9.806,color='#000000',label='Tabulato')
+    ax71.axhspan(ymin=g0_w-dg0_w,ymax=g0_w+dg0_w,color='b',alpha=.2)
+    ax71.axhspan(ymin=g0_1w-dg0_1w,ymax=g0_1w+dg0_1w,color='r',alpha=.2)
+    ax71.set_title('g=g(l)')
+    ax71.set_ylabel('g ['+l_units+'*'+t_units+'^-2]')
+    ax71.set_xlabel('L ['+l_units+']')
+    legend71 = ax71.legend(loc='lower right', shadow=True)
+    legend71.get_frame().set_facecolor('#00FF69')
+    #finishing
+    fig7.suptitle('Dipendenza di g da l',fontsize=16)
+
     #plt.show()
     fig1.savefig('Relazione/fig 3/fig1.png', transparent=False, dpi=160, )
     fig2.savefig('Relazione/fig 3/fig2.png', transparent=False, dpi=160, )
@@ -260,3 +279,4 @@ def parte_3():
     fig4.savefig('Relazione/fig 3/fig4.png', transparent=False, dpi=160, )
     fig5.savefig('Relazione/fig 3/fig5.png', transparent=False, dpi=160, )
     fig6.savefig('Relazione/fig 3/fig6.png', transparent=False, dpi=160, )
+    fig7.savefig('Relazione/fig 3/fig7.png', transparent=False, dpi=160, )
