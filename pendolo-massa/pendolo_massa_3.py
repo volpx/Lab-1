@@ -132,7 +132,8 @@ def parte_3():
     print('g0_1w:',ufloat(g0_1w,dg0_1w))
     chi2_1w=chi2(g_1,dg_1,g0_1w)
     print('chi2_1w:',chi2_1w)
-    #TODO:smth wont work
+    g0_1m,dg0_1m=np.mean(g_1),np.std(g_1)
+    print('g0_1m:',ufloat(g0_1m,dg0_1m))
 
     ############################################################################
     #            PLOTS
