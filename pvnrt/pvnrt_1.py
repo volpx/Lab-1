@@ -58,7 +58,10 @@ def parte1():
     ############################################################################
     A,B,dA,dB=linear_regression_AB(temp,h_m,h_m_wei)
     print('Linear regression: h =',ufloat(A,dA),'+',ufloat(B,dB),'* T')
+<<<<<<< HEAD
     #TODO: chi2 is crazy
+=======
+>>>>>>> 36659d2cedc246bb6f11d204dc5ce4ba4b228b20
     chi2_ht=chi2(h_m,dh_m,A+B*temp)
     print('Chi2 : ',chi2_ht)
     p_m=p_a_mt+RHO_H2O*G_ACC*(h_m-h_0)
