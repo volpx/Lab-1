@@ -51,7 +51,7 @@ def parte_3():
     dt=np.sqrt((delta_t)**2 + \
                 np.std(tempi,axis=1)**2)[0:]
     dm=1e-4/np.sqrt(12)
-    dd=5*np.pi/180
+    dd=1*np.pi/180
 
     #data
     x=final_lengths=lunghezze[0:]
@@ -146,6 +146,7 @@ def parte_3():
     ax11.set_title('Linear axes')
     ax11.set_ylabel('T ['+t_units+']')
     ax11.set_xlabel('L ['+l_units+']')
+    ax11.grid()
     #sp2
     ax12=fig1.add_subplot(1,2,2)
     ax12.errorbar(x,y,xerr=dx,yerr=dt,fmt='b.')
@@ -154,6 +155,7 @@ def parte_3():
     ax12.set_title('Logarithmic axes')
     ax12.set_ylabel('T ['+t_units+']')
     ax12.set_xlabel('L ['+l_units+']')
+    ax12.grid()
     #zoom
     ax11_zoom = fig1.add_axes((.3,.2,.15,.2))
     ax11_zoom.errorbar(final_lengths[3],final_time[3],xerr=dx,yerr=dt[3],fmt='b.')
@@ -164,6 +166,7 @@ def parte_3():
     ax11_zoom.set_ylabel('T ['+t_units+']')
     ax11_zoom.set_xlabel('L ['+l_units+']')
     mark_inset(ax11, ax11_zoom, loc1=1, loc2=3, fc="none", ec="0.5")
+
     #finishing
     fig1.suptitle('T=T(M)',fontsize=16)
 
@@ -171,52 +174,59 @@ def parte_3():
     fig2=plt.figure(figsize=(8,4))
     #sp1
     ax21=fig2.add_subplot(1,2,1)
-    ax21.errorbar(x,y,xerr=dx,yerr=dt,fmt='b.')
-    ax21.plot([np.min(x),np.max(x)],[A+np.min(x)*B,A+np.max(x)*B],color='#e41a1c')
-    ax21.set_title('T=T(M)')
+    ax21.errorbar(x,y,xerr=dx,yerr=dt,fmt='b.',label='Dati')
+    ax21.plot([np.min(x),np.max(x)],[A+np.min(x)*B,A+np.max(x)*B],color='#e41a1c',label='Regressione lineare')
+    ax21.set_title('Regressione Lineare')
     ax21.set_ylabel('T ['+t_units+']')
     ax21.set_xlabel('L ['+l_units+']')
     #sp2
     ax22=fig2.add_subplot(1,2,2)
     ax22.errorbar(x,y-A-B*x,xerr=dx,yerr=dt,fmt='b.')
     ax22.axhline(y=0,color='#e41a1c')
-    ax22.set_title('R=R(M)')
+    ax22.set_title('Residui')
     ax22.set_ylabel('T ['+t_units+']')
     ax22.set_xlabel('L ['+l_units+']')
+
+    legend21 = ax21.legend(loc='lower right', shadow=True)
     #finishing
-    fig2.suptitle('Proporzione lineare T=A+B*l',fontsize=16)
+    #fig2.suptitle('Proporzione lineare T=A+B*l',fontsize=16)
 
 
     ##PLOT 3
     fig3=plt.figure(figsize=DOUBLE_FIGSIZE)
     #sp1
     ax31=fig3.add_subplot(1,2,1)
-    ax31.errorbar(X,Y,xerr=dX,yerr=dY,fmt='b.')
-    ax31.plot([np.min(X),np.max(X)],[A_log+np.min(X)*B_log,A_log+np.max(X)*B_log],color='#e41a1c')
-    ax31.set_title('Y=Y(X)')
+    ax31.errorbar(X,Y,xerr=dX,yerr=dY,fmt='b.',label='Dati')
+    ax31.plot([np.min(X),np.max(X)],[A_log+np.min(X)*B_log,A_log+np.max(X)*B_log],color='#e41a1c',label='Regressione lineare')
+    ax31.set_title('Regressione lineare')
     ax31.set_ylabel('Y[]')
     ax31.set_xlabel('X[]')
+    legend31 = ax31.legend(loc='lower right', shadow=True)
+    ax31.grid()
     #sp2
     ax32=fig3.add_subplot(1,2,2)
     ax32.errorbar(X,Y-A_log-B_log*X,xerr=dX,yerr=dY,fmt='b.')
     ax32.axhline(y=0,color='#e41a1c')
-    ax32.set_title('R_log(X)')
+    ax32.set_title('Residui')
     ax32.set_ylabel('R[]')
     ax32.set_xlabel('X[]')
+    ax32.grid()
+
     #finishing
-    fig3.suptitle('Proporzione lineare sui grafici loglog Y=A_log+B_log*X',fontsize=16)
+    # fig3.suptitle('Proporzione lineare sui grafici loglog Y=A_log+B_log*X',fontsize=16)
 
     ##PLOT 4
     fig4=plt.figure(figsize=MONO_FIGSIZE)
     #sp1
     ax41=fig4.add_subplot(1,1,1)
     for i in [[dg,'#e41a1c','dg'],[dg_l,'#377eb8','dg_l'],[dg_t,'#4daf4a','dg_t']]:
-        ax41.plot(x,i[0],color=i[1],label=i[2])
+        ax41.plot(x,i[0],'bo',color=i[1],label=i[2])
+        ax41.plot(x,i[0],'--',color=i[1])
     ax41.set_ylabel('dg ['+l_units+'*'+t_units+'^-2]')
     ax41.set_xlabel('L ['+l_units+']')
     #finishing
     legend41 = ax41.legend(loc='upper right', shadow=True)
-    legend41.get_frame().set_facecolor('#00FF69')
+    # legend41.get_frame().set_facecolor('#00FF69')
     fig4.suptitle('Confronto contributo incertezze per g',fontsize=16)
 
     ##PLOT 5
@@ -234,7 +244,7 @@ def parte_3():
     ax51.set_ylabel('g ['+l_units+'*'+t_units+'^-2]')
     ax51.set_xlabel('L ['+l_units+']')
     legend51 = ax51.legend(loc='lower right', shadow=True)
-    legend51.get_frame().set_facecolor('#00FF69')
+    #legend51.get_frame().set_facecolor('#00FF69')
     #finishing
     fig5.suptitle('Dipendenza di g da l',fontsize=16)
 
@@ -250,7 +260,7 @@ def parte_3():
     ax61.set_ylabel('g ['+l_units+'*'+t_units+'^-2]')
     ax61.set_xlabel('L ['+l_units+']')
     legend61 = ax61.legend(loc='lower right', shadow=True)
-    legend61.get_frame().set_facecolor('#00FF69')
+    #legend61.get_frame().set_facecolor('#00FF69')
     #finishing
     fig6.suptitle('Dipendenza di g da l (considerando a)',fontsize=16)
 
@@ -269,11 +279,30 @@ def parte_3():
     ax71.set_ylabel('g ['+l_units+'*'+t_units+'^-2]')
     ax71.set_xlabel('L ['+l_units+']')
     legend71 = ax71.legend(loc='lower right', shadow=True)
-    legend71.get_frame().set_facecolor('#00FF69')
+    #legend71.get_frame().set_facecolor('#00FF69')
     #finishing
     fig7.suptitle('Dipendenza di g da l',fontsize=16)
 
-    #plt.show()
+    ##PLOT 8
+    fig8=plt.figure(figsize=MONO_FIGSIZE)
+    #sp1
+    ax81=fig8.add_subplot(1,1,1)
+    ax81.errorbar(x,g,xerr=dx,yerr=dg,fmt='b.',label='Pendolo semplice')
+    ax81.errorbar(x,g_1,xerr=dx,yerr=dg_1,fmt='r.',label='Pendolo fisico')
+    ax81.axhline(y=g0_1m,color='b',label='Media aritmetica')
+    ax81.axhline(y=g0_1w,color='r',label='Media pesata')
+    ax81.axhline(y=9.806,color='#000000',label='Tabulato')
+    ax81.axhspan(ymin=g0_1m-dg0_1m,ymax=g0_1m+dg0_1m,color='b',alpha=.2)
+    ax81.axhspan(ymin=g0_1w-dg0_1w,ymax=g0_1w+dg0_1w,color='r',alpha=.2)
+    # ax71.set_title('g=g(l)')
+    ax81.set_ylabel('g ['+l_units+'*'+t_units+'^-2]')
+    ax81.set_xlabel('L ['+l_units+']')
+    legend71 = ax81.legend(loc='lower right', shadow=True)
+    #legend71.get_frame().set_facecolor('#00FF69')
+    #finishing
+    fig8.suptitle('Dipendenza di g da l',fontsize=16)
+
+    # plt.show()
     fig1.savefig('Relazione/fig 3/fig1.png', transparent=False, dpi=160, )
     fig2.savefig('Relazione/fig 3/fig2.png', transparent=False, dpi=160, )
     fig3.savefig('Relazione/fig 3/fig3.png', transparent=False, dpi=160, )
@@ -281,3 +310,4 @@ def parte_3():
     fig5.savefig('Relazione/fig 3/fig5.png', transparent=False, dpi=160, )
     fig6.savefig('Relazione/fig 3/fig6.png', transparent=False, dpi=160, )
     fig7.savefig('Relazione/fig 3/fig7.png', transparent=False, dpi=160, )
+    fig8.savefig('Relazione/fig 3/fig8.png', transparent=False, dpi=160, )

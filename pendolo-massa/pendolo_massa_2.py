@@ -76,7 +76,7 @@ def parte_2():
 
     ## Plot_1
     fig1=plt.figure(figsize=(10,5))
-    fig1.suptitle('T=T(M)')
+    fig1.suptitle('Grafico del periodo in funzione della massa')
     ax1=fig1.add_subplot(111)
     ax1.errorbar(x,y,xerr=dm,yerr=dt,fmt='b.',label='Osservazioni')
     ax1.set_ylabel('T ['+t_units+']')
@@ -87,7 +87,7 @@ def parte_2():
     #plot lr blue
     ax1.plot([final_mass[0],final_mass[3]],[A+B*final_mass[0],A+B*final_mass[3]],color='#377eb8',label='Regressione lineare')
     legend1 = ax1.legend(loc='upper right', shadow=True)
-    legend1.get_frame().set_facecolor('#00FF69')
+    # legend1.get_frame().set_facecolor('#00FF69')
     #show
     #plt.show()
     fig1.savefig('Relazione/fig 2/fig11.png', transparent=False, dpi=160, )
