@@ -13,6 +13,8 @@ DOUBLE_FIGSIZE=(10,5)
 RHO_HG=13.534*1e3
 RHO_H2O=1*1e3
 G_ACC=9.806
+R=8.31
+D_TEMP=11+ZERO_C
 
 def parte1():
     def import_misure(file_name):
@@ -37,12 +39,12 @@ def parte1():
     time_a,h_a,pres_a=import_misure('data/pr_atm_lun_14_5_18.csv')
     h_a*=1e-2
     pres_a*=1e2
-    ##atmospheric pression at measured time
+    ##calculating atmospheric pression at measured time
     p_a=RHO_HG*G_ACC*h_a+pres_a
     dp_a=RHO_HG*G_ACC*dh_a
     p_a_mt=np.empty(h_m.shape)
     for i in range(len(p_a_mt)):
-        #i_b is the index in time_a for the time befor time_m[i]
+        #i_b is the index in time_a for the time before time_m[i]
         i_b=0
         while(not (time_m[i] < time_a[i_b])):
             i_b+=1
@@ -53,28 +55,53 @@ def parte1():
     i_zero=np.unravel_index(np.argmin(temp),temp.shape)[0]
     h_m_wei=1/dh_m**2
 
+    p_m=p_a_mt+RHO_H2O*G_ACC*(h_m-h_0)
+    dp_m=dp_a#TODO: uncertainties?????????
+    p_m_wei=1/dp_m**2
+    p_0=p_m[i_zero]
+    alpha=1/ZERO_C
+
     ############################################################################
     #             ANALYSIS
     ############################################################################
-    A,B,dA,dB=linear_regression_AB(temp,h_m,h_m_wei)
-    print('Linear regression: h =',ufloat(A,dA),'+',ufloat(B,dB),'* T')
-    #TODO: chi2 is crazy
-    chi2_ht=chi2(h_m,dh_m,A+B*temp)
-    print('Chi2 : ',chi2_ht)
-    p_m=p_a_mt+RHO_H2O*G_ACC*(h_m-h_0)
-    dp_m=dp_a#TODO: uncertainties?????????
+    A1,B1,dA1,dB1=linear_regression_AB(temp,h_m,h_m_wei)
+    print('Linear regression 1: h =',ufloat(A1,dA1),'+',ufloat(B1,dB1),'* T')
+    chi2_ht1=chi2(h_m,dh_m,A1+B1*temp)
+    print('Chi2 1: ',chi2_ht1,'non lineare')
 
-    zero_guess=-(np.mean(p_a_mt)/RHO_H2O/G_ACC+A)/B
-    dzero_guess=np.sqrt((dp_a/(B*RHO_H2O*G_ACC))**2+(dA/B)**2+((np.mean(p_a_mt)/RHO_H2O/G_ACC+A)/B)**2)
-    print(zero_guess)
-    print(dzero_guess)
+    print('Considero solo i valori con T>D_TEMP')
+    temp2=[]
+    h_m2=[]
+    p_m2=[]
+    for i,t in enumerate(temp):
+        if t > D_TEMP:
+            temp2.append(t)
+            h_m2.append(h_m[i])
+            p_m2.append(p_m[i])
+    temp2=np.array(temp2)
+    h_m2=np.array(h_m2)
+    p_m2=np.array(p_m2)
+    A2,B2,dA2,dB2=linear_regression_AB(temp2,h_m2,h_m_wei)
+    print('Linear regression 1: h =',ufloat(A2,dA2),'+',ufloat(B2,dB2),'* T')
+    chi2_ht2=chi2(h_m2,dh_m,A2+B2*temp2)
+    print('Chi2 1: ',chi2_ht2)
+
+    A3,B3,dA3,dB3=linear_regression_AB(temp2,p_m2,p_m_wei)
+    print('Linear regression 1: P =',ufloat(A3,dA3),'+',ufloat(B3,dB3),'* T')
+    chi2_pt3=chi2(p_m2,dp_m,A3+B3*temp2)
+    print('Chi2 1: ',chi2_pt3)
+
+    #TODO:redo when chi2 works
+    zero_guess=-(np.mean(p_a_mt)/RHO_H2O/G_ACC+A2)/B2
+    dzero_guess=np.sqrt((dp_a/(B2*RHO_H2O*G_ACC))**2+(dA2/B2)**2+((np.mean(p_a_mt)/RHO_H2O/G_ACC+A2)/B2)**2)
+    print('zero guess :',ufloat(zero_guess,dzero_guess))
 
 
     ############################################################################
     #             PLOTS
     ############################################################################
     #PLOT1
-    fig1=plt.figure(figsize=MONO_FIGSIZE)
+    fig1=plt.figure(figsize=DOUBLE_FIGSIZE)
     ax11=fig1.add_subplot(1,1,1)
     ax11.errorbar(temp[:i_zero],h_m[:i_zero],yerr=dh_m,xerr=dtemp,fmt='b.',label='Temp scendendo')
     ax11.errorbar(temp[i_zero:],h_m[i_zero:],yerr=dh_m,xerr=dtemp,fmt='r.',label='Temp salendo')
@@ -84,7 +111,7 @@ def parte1():
     ax11.set_xlabel('T [K]')
     ax11.set_ylabel('h [m]')
     ax11.grid()
-    ax11_zoom=fig1.add_axes((.7,.2,.15,.2))
+    ax11_zoom=fig1.add_axes((.65,.2,.2,.2))
     ax11_zoom.errorbar(temp[10],h_m[10],yerr=dh_m,xerr=dtemp)
     ax11_zoom.set_xlabel('T [K]')
     ax11_zoom.set_ylabel('h [m]')
@@ -95,8 +122,9 @@ def parte1():
     #PLOT2
     fig2=plt.figure(figsize=DOUBLE_FIGSIZE)
     ax21=fig2.add_subplot(1,1,1)
-    ax21.errorbar(temp[:i_zero],h_m[:i_zero]-A-B*temp[:i_zero],yerr=dh_m,xerr=dtemp,fmt='b.',label='Temp scendendo')
-    ax21.errorbar(temp[i_zero:],h_m[i_zero:]-A-B*temp[i_zero:],yerr=dh_m,xerr=dtemp,fmt='r.',label='Temp salendo')
+    ax21.errorbar(temp2[:i_zero],h_m2[:i_zero]-A2-B2*temp2[:i_zero],yerr=dh_m,xerr=dtemp,fmt='b.',label='Temp scendendo')
+    ax21.errorbar(temp2[i_zero:],h_m2[i_zero:]-A2-B2*temp2[i_zero:],yerr=dh_m,xerr=dtemp,fmt='r.',label='Temp salendo')
+    ax21.axhline(y=0)
     ax21.set_xlabel('T [K]')
     ax21.set_ylabel('h [m]')
     fig2.suptitle('Dipendenza di h da T',fontsize=16)
