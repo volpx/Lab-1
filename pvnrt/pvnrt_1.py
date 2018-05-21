@@ -28,8 +28,8 @@ def parte1():
             return data[:,0],data[:,1],data[:,2]
 
     ## UNCERT
-    dh_m=1e-3/np.sqrt(12)
-    dh_a=1e-3/np.sqrt(12)
+    dh_m=2e-3/np.sqrt(12)
+    dh_a=2e-3/np.sqrt(12)
     dtemp=1e-2/np.sqrt(12)
 
     ## DATA
@@ -56,7 +56,7 @@ def parte1():
     h_m_wei=1/dh_m**2
 
     p_m=p_a_mt+RHO_H2O*G_ACC*(h_m-h_0)
-    dp_m=dp_a#TODO: uncertainties?????????
+    dp_m=np.sqrt(dp_a**2+2*(RHO_H2O*G_ACC*dh_m)**2)
     p_m_wei=1/dp_m**2
     p_0=p_m[i_zero]
     alpha=1/ZERO_C
