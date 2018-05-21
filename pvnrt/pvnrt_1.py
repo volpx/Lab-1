@@ -57,6 +57,7 @@ def parte1():
 
     p_m=p_a_mt+RHO_H2O*G_ACC*(h_m-h_0)
     dp_m=np.sqrt(dp_a**2+2*(RHO_H2O*G_ACC*dh_m)**2)
+    print('dp_m:',dp_m)
     p_m_wei=1/dp_m**2
     p_0=p_m[i_zero]
     alpha=1/ZERO_C
@@ -81,20 +82,37 @@ def parte1():
     temp2=np.array(temp2)
     h_m2=np.array(h_m2)
     p_m2=np.array(p_m2)
-    A2,B2,dA2,dB2=linear_regression_AB(temp2,h_m2,h_m_wei)
-    print('Linear regression 1: h =',ufloat(A2,dA2),'+',ufloat(B2,dB2),'* T')
-    chi2_ht2=chi2(h_m2,dh_m,A2+B2*temp2)
-    print('Chi2 1: ',chi2_ht2)
+    i_min2=np.unravel_index(np.argmin(temp2),temp.shape)[0]
+
+    A21,B21,dA21,dB21=linear_regression_AB(temp2[:i_min2],h_m2[:i_min2],h_m_wei)
+    print('Linear regression scendendo: h =',ufloat(A21,dA21),'+',ufloat(B21,dB21),'* T')
+    chi2_ht21=chi2(h_m2[:i_min2],dh_m,A21+B21*temp2[:i_min2])
+    print('Chi2 1: ',chi2_ht21)
+
+    A22,B22,dA22,dB22=linear_regression_AB(temp2[i_min2:],h_m2[i_min2:],h_m_wei)
+    print('Linear regression salendo: h =',ufloat(A22,dA22),'+',ufloat(B22,dB22),'* T')
+    chi2_ht22=chi2(h_m2[i_min2:],dh_m,A22+B22*temp2[i_min2:])
+    print('Chi2 1: ',chi2_ht22)
 
     A3,B3,dA3,dB3=linear_regression_AB(temp2,p_m2,p_m_wei)
-    print('Linear regression 1: P =',ufloat(A3,dA3),'+',ufloat(B3,dB3),'* T')
+    print('Linear regression total: P =',ufloat(A3,dA3),'+',ufloat(B3,dB3),'* T')
     chi2_pt3=chi2(p_m2,dp_m,A3+B3*temp2)
     print('Chi2 1: ',chi2_pt3)
 
+    A31,B31,dA31,dB31=linear_regression_AB(temp2[:i_min2],p_m2[:i_min2],p_m_wei)
+    print('Linear regression scendendo: P =',ufloat(A31,dA31),'+',ufloat(B31,dB31),'* T')
+    chi2_pt31=chi2(p_m2[:i_min2],dp_m,A3+B3*temp2[:i_min2])
+    print('Chi2 1: ',chi2_pt31)
+
+    A32,B32,dA32,dB32=linear_regression_AB(temp2[i_min2:],p_m2[i_min2:],p_m_wei)
+    print('Linear regression salendo: P =',ufloat(A32,dA32),'+',ufloat(B32,dB32),'* T')
+    chi2_pt32=chi2(p_m2[i_min2:],dp_m,A32+B32*temp2[i_min2:])
+    print('Chi2 1: ',chi2_pt32)
+
     #TODO:redo when chi2 works
-    zero_guess=-(np.mean(p_a_mt)/RHO_H2O/G_ACC+A2)/B2
-    dzero_guess=np.sqrt((dp_a/(B2*RHO_H2O*G_ACC))**2+(dA2/B2)**2+((np.mean(p_a_mt)/RHO_H2O/G_ACC+A2)/B2)**2)
-    print('zero guess :',ufloat(zero_guess,dzero_guess))
+    # zero_guess=-(np.mean(p_a_mt)/RHO_H2O/G_ACC+A2)/B2
+    # dzero_guess=np.sqrt((dp_a/(B2*RHO_H2O*G_ACC))**2+(dA2/B2)**2+((np.mean(p_a_mt)/RHO_H2O/G_ACC+A2)/B2)**2)
+    # print('zero guess :',ufloat(zero_guess,dzero_guess))
 
 
     ############################################################################
@@ -121,20 +139,30 @@ def parte1():
 
     #PLOT2
     fig2=plt.figure(figsize=DOUBLE_FIGSIZE)
+    fig2.suptitle('Dipendenza di h da T',fontsize=16)
     ax21=fig2.add_subplot(1,1,1)
-    ax21.errorbar(temp2[:i_zero],h_m2[:i_zero]-A2-B2*temp2[:i_zero],yerr=dh_m,xerr=dtemp,fmt='b.',label='Temp scendendo')
-    ax21.errorbar(temp2[i_zero:],h_m2[i_zero:]-A2-B2*temp2[i_zero:],yerr=dh_m,xerr=dtemp,fmt='r.',label='Temp salendo')
+    ax21.errorbar(temp2[:i_min2],h_m2[:i_min2]-A21-B21*temp2[:i_min2],yerr=dh_m,xerr=dtemp,fmt='b.',label='Temp scendendo')
+    ax21.errorbar(temp2[i_min2:],h_m2[i_min2:]-A22-B22*temp2[i_min2:],yerr=dh_m,xerr=dtemp,fmt='r.',label='Temp salendo')
     ax21.axhline(y=0)
     ax21.set_xlabel('T [K]')
     ax21.set_ylabel('h [m]')
-    fig2.suptitle('Dipendenza di h da T',fontsize=16)
 
-    # #PLOT3
-    # fig3=plt.figure(figsize=DOUBLE_FIGSIZE)
-    # ax31=fig3.add_subplot(1,1,1)
-    # ax31.errorbar(temp,p_m,yerr=dp,xerr=dtemp,fmt='b.')
-    # ax31.set_xlabel('T [K]')
-    # ax31.set_ylabel('h [m]')
-    # fig3.suptitle('Dipendenza di h da T',fontsize=16)
+    #PLOT3
+    fig3=plt.figure(figsize=DOUBLE_FIGSIZE)
+    ax31=fig3.add_subplot(1,1,1)
+    ax31.errorbar(temp2[:i_min2],p_m2[:i_min2]-A31-B31*temp2[:i_min2],yerr=dp_m,xerr=dtemp,fmt='b.',label='Temp scendendo')
+    ax31.axhline(y=0)
+    ax31.set_xlabel('T [K]')
+    ax31.set_ylabel('P [Pa]')
+    fig3.suptitle('Dipendenza di P da T scendendo',fontsize=16)
+
+    #PLOT4
+    fig4=plt.figure(figsize=DOUBLE_FIGSIZE)
+    fig4.suptitle('Dipendenza di P da T salendo',fontsize=16)
+    ax41=fig4.add_subplot(1,1,1)
+    ax41.errorbar(temp2[i_min2:],p_m2[i_min2:]-A32-B32*temp2[i_min2:],yerr=dp_m,xerr=dtemp,fmt='b.',label='Temp scendendo')
+    ax41.axhline(y=0)
+    ax41.set_xlabel('T [K]')
+    ax41.set_ylabel('P [Pa]')
 
     plt.show()
