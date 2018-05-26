@@ -28,8 +28,8 @@ def parte1():
             return data[:,0],data[:,1],data[:,2]
 
     ## UNCERT
-    dh_m=2e-3/np.sqrt(12)
-    dh_a=2e-3/np.sqrt(12)
+    dh_m=1e-3/np.sqrt(12)
+    dh_a=1.1e-3/np.sqrt(12)
     dtemp=1e-2/np.sqrt(12)
 
     ## DATA
@@ -52,7 +52,7 @@ def parte1():
         p_a_mt[i]=p_a[i_b]+(p_a[i_b+1]-p_a[i_b])/(time_a[i_b+1]-time_a[i_b])*(time_m[i]-time_a[i_b])
     ##nice perameters
     h_0=95*1e-2
-    i_zero=np.unravel_index(np.argmin(temp),temp.shape)[0]
+    i_zero=np.argmin(temp)
     h_m_wei=1/dh_m**2
 
     p_m=p_a_mt+RHO_H2O*G_ACC*(h_m-h_0)
@@ -82,7 +82,7 @@ def parte1():
     temp2=np.array(temp2)
     h_m2=np.array(h_m2)
     p_m2=np.array(p_m2)
-    i_min2=np.unravel_index(np.argmin(temp2),temp.shape)[0]
+    i_min2=np.argmin(temp2)
 
     A21,B21,dA21,dB21=linear_regression_AB(temp2[:i_min2],h_m2[:i_min2],h_m_wei)
     print('Linear regression scendendo: h =',ufloat(A21,dA21),'+',ufloat(B21,dB21),'* T')
@@ -101,7 +101,7 @@ def parte1():
 
     A31,B31,dA31,dB31=linear_regression_AB(temp2[:i_min2],p_m2[:i_min2],p_m_wei)
     print('Linear regression scendendo: P =',ufloat(A31,dA31),'+',ufloat(B31,dB31),'* T')
-    chi2_pt31=chi2(p_m2[:i_min2],dp_m,A3+B3*temp2[:i_min2])
+    chi2_pt31=chi2(p_m2[:i_min2],dp_m,A31+B31*temp2[:i_min2])
     print('Chi2 1: ',chi2_pt31)
 
     A32,B32,dA32,dB32=linear_regression_AB(temp2[i_min2:],p_m2[i_min2:],p_m_wei)
@@ -110,9 +110,10 @@ def parte1():
     print('Chi2 1: ',chi2_pt32)
 
     #TODO:redo when chi2 works
-    # zero_guess=-(np.mean(p_a_mt)/RHO_H2O/G_ACC+A2)/B2
-    # dzero_guess=np.sqrt((dp_a/(B2*RHO_H2O*G_ACC))**2+(dA2/B2)**2+((np.mean(p_a_mt)/RHO_H2O/G_ACC+A2)/B2)**2)
-    # print('zero guess :',ufloat(zero_guess,dzero_guess))
+    i_zero_guess_start=np.where(temp==temp2[i_min2])[0][0]
+    zero_guess=-A32/B32
+    dzero_guess=np.sqrt((dA32/B32)**2+(A32/B32**2*dB32)**2)
+    print('zero guess :',ufloat(zero_guess,dzero_guess))
 
 
     ############################################################################
