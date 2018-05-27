@@ -15,6 +15,7 @@ RHO_H2O=1*1e3
 G_ACC=9.806
 R=8.31
 D_TEMP=11+ZERO_C
+RH=.64
 
 def parte1():
     def import_misure(file_name):
@@ -111,10 +112,21 @@ def parte1():
 
     #TODO:redo when chi2 works
     i_zero_guess_start=np.where(temp==temp2[i_min2])[0][0]
-    zero_guess=-A32/B32
-    dzero_guess=np.sqrt((dA32/B32)**2+(A32/B32**2*dB32)**2)
-    print('zero guess :',ufloat(zero_guess,dzero_guess))
+    zero_guess1=-A32/B32
+    dzero_guess1=np.sqrt((dA32/B32)**2+(A32/B32**2*dB32)**2)
+    print('zero guess :',ufloat(zero_guess1,dzero_guess1))
 
+    #let's try to use under dew point data
+    a=611.21
+    b=18.678
+    c=257.14
+    d=234.5
+    t0=temp[0]-ZERO_C
+    gamma=np.log(RH)+b*t0/(c+t0)
+    t_dp=c*gamma/(b-gamma)
+    ps=a*np.exp(b*t0/(c+t0))
+    pa=a*np.exp(gamma)
+    print(gamma,t_dp)
 
     ############################################################################
     #             PLOTS
