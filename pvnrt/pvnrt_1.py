@@ -27,10 +27,11 @@ def parte1():
                     data.append(row)
             data=np.array(data)
             return data[:,0],data[:,1],data[:,2]
-
+    def sat_vapo_pres(t):
+        return 10**(a-b/(c+t))
     ## UNCERT
     dh_m=1e-3/np.sqrt(12)
-    dh_a=1.1e-3/np.sqrt(12)
+    dh_a=1.2e-3/np.sqrt(12)
     dtemp=1e-2/np.sqrt(12)
 
     ## DATA
@@ -88,45 +89,59 @@ def parte1():
     A21,B21,dA21,dB21=linear_regression_AB(temp2[:i_min2],h_m2[:i_min2],h_m_wei)
     print('Linear regression scendendo: h =',ufloat(A21,dA21),'+',ufloat(B21,dB21),'* T')
     chi2_ht21=chi2(h_m2[:i_min2],dh_m,A21+B21*temp2[:i_min2])
-    print('Chi2 1: ',chi2_ht21)
+    print('Chi2 21: ',chi2_ht21)
 
     A22,B22,dA22,dB22=linear_regression_AB(temp2[i_min2:],h_m2[i_min2:],h_m_wei)
     print('Linear regression salendo: h =',ufloat(A22,dA22),'+',ufloat(B22,dB22),'* T')
     chi2_ht22=chi2(h_m2[i_min2:],dh_m,A22+B22*temp2[i_min2:])
-    print('Chi2 1: ',chi2_ht22)
+    print('Chi2 22: ',chi2_ht22)
 
     A3,B3,dA3,dB3=linear_regression_AB(temp2,p_m2,p_m_wei)
     print('Linear regression total: P =',ufloat(A3,dA3),'+',ufloat(B3,dB3),'* T')
     chi2_pt3=chi2(p_m2,dp_m,A3+B3*temp2)
-    print('Chi2 1: ',chi2_pt3)
+    print('Chi2 3: ',chi2_pt3)
 
     A31,B31,dA31,dB31=linear_regression_AB(temp2[:i_min2],p_m2[:i_min2],p_m_wei)
     print('Linear regression scendendo: P =',ufloat(A31,dA31),'+',ufloat(B31,dB31),'* T')
     chi2_pt31=chi2(p_m2[:i_min2],dp_m,A31+B31*temp2[:i_min2])
-    print('Chi2 1: ',chi2_pt31)
+    print('Chi2 31: ',chi2_pt31)
 
     A32,B32,dA32,dB32=linear_regression_AB(temp2[i_min2:],p_m2[i_min2:],p_m_wei)
     print('Linear regression salendo: P =',ufloat(A32,dA32),'+',ufloat(B32,dB32),'* T')
     chi2_pt32=chi2(p_m2[i_min2:],dp_m,A32+B32*temp2[i_min2:])
-    print('Chi2 1: ',chi2_pt32)
+    print('Chi2 32: ',chi2_pt32)
 
     #TODO:redo when chi2 works
     i_zero_guess_start=np.where(temp==temp2[i_min2])[0][0]
     zero_guess1=-A32/B32
     dzero_guess1=np.sqrt((dA32/B32)**2+(A32/B32**2*dB32)**2)
-    print('zero guess :',ufloat(zero_guess1,dzero_guess1))
+    print('zero guess 1:',ufloat(zero_guess1,dzero_guess1))
 
     #let's try to use under dew point data
-    a=611.21
-    b=18.678
-    c=257.14
-    d=234.5
-    t0=temp[0]-ZERO_C
-    gamma=np.log(RH)+b*t0/(c+t0)
-    t_dp=c*gamma/(b-gamma)
-    ps=a*np.exp(b*t0/(c+t0))
-    pa=a*np.exp(gamma)
-    print(gamma,t_dp)
+    a=10.196213
+    b=1730.63
+    c=233.426-ZERO_C
+    # #abs_hum is in kg*m^-3
+    # abs_hum=2.16679e-3*sat_vapo_pres(20+ZERO_C)/(20+ZERO_C)*RH
+    # #percentage of water in air by mass
+    # rho_air_20C=1.2041
+    # water_in_air=abs_hum/rho_air_20C
+    #correcting pressure adding the help of water that condensed
+    p_m_cor=p_m.copy()
+    for i in range(len(p_m_cor)):
+        if temp[i] < D_TEMP:
+            # p_m_cor[i]+=water_in_air*(sat_vapo_pres(D_TEMP)+(temp[i]-D_TEMP)*(sat_vapo_pres(D_TEMP)/temp[i])-sat_vapo_pres(temp[i]))
+            #TODO:it works like that but it doesn't make sense at all
+            p_m_cor[i]+=RH*(sat_vapo_pres(D_TEMP)+(temp[i]-D_TEMP)*(sat_vapo_pres(D_TEMP)/temp[i])-sat_vapo_pres(temp[i]))
+            
+    A4,B4,dA4,dB4=linear_regression_AB(temp,p_m_cor,p_m_wei)
+    print('Linear regression corr: P =',ufloat(A4,dA4),'+',ufloat(B4,dB4),'* T')
+    chi2_pt4=chi2(p_m_cor,dp_m,A4+B4*temp)
+    print('Chi2 4: ',chi2_pt4)
+
+    zero_guess2=-A4/B4
+    dzero_guess2=np.sqrt((dA4/B4)**2+(A4/B4**2*dB4)**2)
+    print('zero guess 2:',ufloat(zero_guess2,dzero_guess2))
 
     ############################################################################
     #             PLOTS
@@ -178,4 +193,23 @@ def parte1():
     ax41.set_xlabel('T [K]')
     ax41.set_ylabel('P [Pa]')
 
-    plt.show()
+    #PLOT5
+    fig5=plt.figure(figsize=DOUBLE_FIGSIZE)
+    fig5.suptitle('Pressioni corrette tenendo conto della pressione di vapore saturo',fontsize=16)
+    ax51=fig5.add_subplot(1,1,1)
+    ax51.errorbar(temp,p_m_cor,xerr=dtemp,yerr=dp_m,fmt='.',label='Pres corr')
+    ax51.errorbar(temp,p_m,xerr=dtemp,yerr=dp_m,fmt='.',label='Pres orig')
+    ax51.set_xlabel('T [K]')
+    ax51.set_ylabel('P [Pa]')
+
+    #PLOT6
+    fig6=plt.figure(figsize=DOUBLE_FIGSIZE)
+    fig6.suptitle('Residui pressioni corrette',fontsize=16)
+    ax61=fig6.add_subplot(1,1,1)
+    ax61.errorbar(temp,p_m_cor-A4-B4*temp,xerr=dtemp,yerr=dp_m,fmt='.',label='Residui pres corr')
+    ax61.axhline(y=0,color='r')
+    ax61.axvline(x=D_TEMP,color='g')
+    ax61.set_xlabel('T [K]')
+    ax61.set_ylabel('P [Pa]')
+
+    plt.show(fig5)
