@@ -47,7 +47,7 @@ def parte1():
     p_a=RHO_HG*G_ACC*h_a+pres_a
     dp_a=RHO_HG*G_ACC*dh_a
     p_a_mt=np.empty(h_m.shape)
-    for i in range(len(p_a_mt)):##
+    for i in range(len(p_a_mt)):###
         #i_b is the index in time_a for the time before time_m[i]
         i_b=0
         while(not (time_m[i] < time_a[i_b])):
