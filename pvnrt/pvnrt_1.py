@@ -39,6 +39,8 @@ def parte1():
     h_m*=1e-2
     temp+=ZERO_C
     time_a,h_a,pres_a=import_misure('data/pr_atm_lun_14_5_18.csv')
+    #TODO: set 72.2 for height of mercury
+    h_a=72.4*np.ones(h_a.shape)
     h_a*=1e-2
     pres_a*=1e2
     ##calculating atmospheric pression at measured time
@@ -133,7 +135,7 @@ def parte1():
             # p_m_cor[i]+=water_in_air*(sat_vapo_pres(D_TEMP)+(temp[i]-D_TEMP)*(sat_vapo_pres(D_TEMP)/temp[i])-sat_vapo_pres(temp[i]))
             #TODO:it works like that but it doesn't make sense at all
             p_m_cor[i]+=RH*(sat_vapo_pres(D_TEMP)+(temp[i]-D_TEMP)*(sat_vapo_pres(D_TEMP)/temp[i])-sat_vapo_pres(temp[i]))
-            
+
     A4,B4,dA4,dB4=linear_regression_AB(temp,p_m_cor,p_m_wei)
     print('Linear regression corr: P =',ufloat(A4,dA4),'+',ufloat(B4,dB4),'* T')
     chi2_pt4=chi2(p_m_cor,dp_m,A4+B4*temp)
@@ -206,7 +208,10 @@ def parte1():
     fig6=plt.figure(figsize=DOUBLE_FIGSIZE)
     fig6.suptitle('Residui pressioni corrette',fontsize=16)
     ax61=fig6.add_subplot(1,1,1)
-    ax61.errorbar(temp,p_m_cor-A4-B4*temp,xerr=dtemp,yerr=dp_m,fmt='.',label='Residui pres corr')
+    ax61.errorbar(temp[i_zero:],p_m_cor[i_zero:]-A4-B4*temp[i_zero:],xerr=dtemp,yerr=dp_m,fmt='b.',label='Residui pres corr')
+    ax61.errorbar(temp[:i_zero],p_m_cor[:i_zero]-A4-B4*temp[:i_zero],xerr=dtemp,yerr=dp_m,fmt='r.',label='Residui pres corr')
+    ax61.plot(temp[i_zero:],p_m_cor[i_zero:]-A4-B4*temp[i_zero:],'-')
+    ax61.plot(temp[:i_zero],p_m_cor[:i_zero]-A4-B4*temp[:i_zero],'-')
     ax61.axhline(y=0,color='r')
     ax61.axvline(x=D_TEMP,color='g')
     ax61.set_xlabel('T [K]')
