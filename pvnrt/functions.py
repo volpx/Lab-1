@@ -33,3 +33,9 @@ def linear_regression_AB(x,y,w):
     dA= np.sqrt(np.sum(((x)**2)*w) / dw)
     dB= np.sqrt(np.sum(w)/dw)
     return A,B,dA,dB
+
+def cov(a,b,ddof=0):
+	ma=np.mean(a)
+	mb=np.mean(b)
+	cov_ab=np.sum((a-ma) * (b-mb))/(len(a)-ddof)
+	return cov_ab
